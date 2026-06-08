@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026-06-08]
+
+### Fixed
+- Semantic colors (success / warning / error / info) in the `design-language.md` now match the PDF — both are pulled from the same emotion-based palette, instead of the markdown using a fixed default set that disagreed with the document for every brand
+- Brand documents now safely handle client names and other inputs containing `<`, `>`, `&`, or quotes — these are HTML-escaped so unusual names (e.g. "Smith & Sons") can't break the generated markup
+
 ## [2026-04-03]
 
 ### Fixed

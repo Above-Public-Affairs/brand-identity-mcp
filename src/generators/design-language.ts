@@ -5,6 +5,7 @@
 
 import type { BrandIdentityInput } from "../types/index.js";
 import { formatDate, hexToRgbString } from "../utils/formatting.js";
+import { generatePalette } from "./sections/colors.js";
 
 export function buildDesignLanguageMd(input: BrandIdentityInput): string {
   const date = formatDate();
@@ -110,7 +111,10 @@ function generateColorSection(input: BrandIdentityInput): string {
     md += `| ${name} | ${hex} | ${hexToRgbString(hex)} |\n`;
   }
 
-  md += `\n### Semantic\n| Purpose | Color |\n|---------|-------|\n| Success | #27AE60 |\n| Warning | #F39C12 |\n| Error | #E74C3C |\n| Info | #2980B9 |\n`;
+  // Pull semantic colors from the same emotion-derived palette the HTML uses,
+  // so the PDF and this markdown never disagree.
+  const semantic = generatePalette(input).semantic;
+  md += `\n### Semantic\n| Purpose | Color |\n|---------|-------|\n| Success | ${semantic.success} |\n| Warning | ${semantic.warning} |\n| Error | ${semantic.error} |\n| Info | ${semantic.info} |\n`;
 
   return md;
 }

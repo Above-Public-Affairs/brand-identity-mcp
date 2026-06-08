@@ -88,6 +88,20 @@ export function wcagRating(ratio: number): string {
 }
 
 /**
+ * Escape a string for safe interpolation into HTML text or attributes.
+ * Prevents user-supplied values (client name, description, etc.) containing
+ * <, >, &, ", or ' from producing malformed markup.
+ */
+export function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
  * Sanitize a client name for use in filenames
  */
 export function sanitizeFilename(name: string): string {

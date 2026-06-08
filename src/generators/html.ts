@@ -4,7 +4,7 @@
  */
 
 import type { BrandIdentityInput } from "../types/index.js";
-import { formatDate } from "../utils/formatting.js";
+import { formatDate, escapeHtml } from "../utils/formatting.js";
 import { generateStrategySection } from "./sections/strategy.js";
 import { generateVoiceToneSection } from "./sections/voice-tone.js";
 import { generateMessagingSection } from "./sections/messaging.js";
@@ -67,7 +67,33 @@ const sectionIds: Record<string, string> = {
   implementation_guide: "implementation",
 };
 
-export function buildHtmlDocument(input: BrandIdentityInput): string {
+/**
+ * Returns a copy of the input with all user-supplied free-text fields
+ * HTML-escaped. Enum fields (client_type, primary_emotion, deliverables) are
+ * left intact since they're used for lookups and contain no special chars.
+ * Section generators and the document shell all render from this safe copy,
+ * so a client name like `Smith & <Sons>` can't break the markup.
+ */
+function escapeInputForHtml(input: BrandIdentityInput): BrandIdentityInput {
+  const escOpt = (s: string | undefined) =>
+    s === undefined ? undefined : escapeHtml(s);
+  return {
+    ...input,
+    client_name: escapeHtml(input.client_name),
+    description: escapeHtml(input.description),
+    target_audience: escapeHtml(input.target_audience),
+    geography: escapeHtml(input.geography),
+    brand_personality: input.brand_personality.map(escapeHtml),
+    competitors: escOpt(input.competitors),
+    existing_assets: escOpt(input.existing_assets),
+    special_considerations: escOpt(input.special_considerations),
+    election_cycle: escOpt(input.election_cycle),
+    party_ideology: escOpt(input.party_ideology),
+  };
+}
+
+export function buildHtmlDocument(rawInput: BrandIdentityInput): string {
+  const input = escapeInputForHtml(rawInput);
   const date = formatDate();
   const sections = input.deliverables
     .filter((d) => sectionGenerators[d])
