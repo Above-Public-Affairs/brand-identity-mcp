@@ -33,7 +33,7 @@ export function generateColorsSection(input: BrandIdentityInput): string {
   `;
 }
 
-function generatePalette(input: BrandIdentityInput): ColorPalette {
+export function generatePalette(input: BrandIdentityInput): ColorPalette {
   const isPolitical = ["campaign", "pac", "advocacy_org"].includes(input.client_type);
   const emotion = input.primary_emotion;
 
